@@ -84,7 +84,7 @@ class VideoSpecialEffect(QMainWindow):
 
             fps = self.cap.get(cv.CAP_PROP_FPS)
             if fps == 0:
-                fps = 20.0
+                fps = 30.0  # 기본값
 
             while True:
                 ret, frame = self.cap.read()
@@ -132,8 +132,10 @@ class VideoSpecialEffect(QMainWindow):
         if not self.is_recording:
             fname, _ = QFileDialog.getSaveFileName(self, '비디오 파일 저장', './', 'MP4 Files (*.mp4);;AVI Files (*.avi)')
             if fname:
-                fourcc = cv.VideoWriter_fourcc(*'mp4v') if fname.endswith('.mp4') else cv.VideoWriter_fourcc(*'XVID')
-                fps = 20.0
+                fourcc = cv.VideoWriter_fourcc(*'avc1') if fname.endswith('.mp4') else cv.VideoWriter_fourcc(*'XVID')
+                fps = self.cap.get(cv.CAP_PROP_FPS)
+                if fps == 0:
+                    fps = 30.0
                 frame_size = (self.special_img.shape[1], self.special_img.shape[0]) if self.special_img is not None else (640, 480)
                 self.out = cv.VideoWriter(fname, fourcc, fps, frame_size)
                 self.is_recording = True
